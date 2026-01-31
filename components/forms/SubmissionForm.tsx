@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
@@ -10,7 +10,6 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Checkbox } from "@/components/ui/checkbox"
-import { Label } from "@/components/ui/label"
 import {
     Form,
     FormControl,
@@ -21,14 +20,18 @@ import {
     FormMessage,
 } from "@/components/ui/form"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import { submitStory } from "@/app/actions"
+// We need to use useActionState (new hook) or useFormState (older but common in 14)
+// Since this is Next.js 14+, let's try to keep it simple with a transition or direct call
+// Actually, combining react-hook-form with server actions is easiest by wrapping the action
+import { useTransition } from "react"
+import { toast } from "sonner" // Assuming you might have sonner/toast, if not we'll use local state
 
 const formSchema = z.object({
     name: z.string().optional(),
     isAnonymous: z.boolean().default(false),
     email: z.string().email({ message: "Please enter a valid email address." }),
-    storyType: z.enum(["written", "photo", "video"], {
-        required_error: "Please select a story type.",
-    }),
+    storyType: z.enum(["written", "photo", "video"]),
     title: z.string().min(5, { message: "Title must be at least 5 characters." }),
     content: z.string().min(50, { message: "Story must be at least 50 characters." }),
     termsAccepted: z.literal(true, {
@@ -38,7 +41,7 @@ const formSchema = z.object({
 
 export function SubmissionForm() {
     const [isSubmitted, setIsSubmitted] = useState(false)
-    const [isSubmitting, setIsSubmitting] = useState(false)
+    const [isPending, startTransition] = useTransition()
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -48,17 +51,32 @@ export function SubmissionForm() {
             email: "",
             content: "",
             title: "",
+            storyType: "written",
         },
     })
 
     function onSubmit(values: z.infer<typeof formSchema>) {
-        setIsSubmitting(true)
-        // Simulate API call
-        setTimeout(() => {
-            console.log(values)
-            setIsSubmitting(false)
-            setIsSubmitted(true)
-        }, 2000)
+        // Convert to FormData to send to Server Action
+        const formData = new FormData()
+        if (values.name) formData.append("name", values.name)
+        formData.append("isAnonymous", String(values.isAnonymous))
+        formData.append("email", values.email)
+        formData.append("storyType", values.storyType)
+        formData.append("title", values.title)
+        formData.append("content", values.content)
+        formData.append("termsAccepted", String(values.termsAccepted))
+
+        startTransition(async () => {
+            const result = await submitStory({ message: "", success: false }, formData)
+            if (result.success) {
+                setIsSubmitted(true)
+            } else {
+                // Handle errors
+                console.error(result.message)
+                // Ideally show a toast here
+                alert("Something went wrong: " + result.message)
+            }
+        })
     }
 
     if (isSubmitted) {
@@ -71,7 +89,7 @@ export function SubmissionForm() {
                 <p className="text-muted-foreground max-w-lg mx-auto">
                     Your story has been submitted and is now under review. We'll notify you by email once it's published.
                 </p>
-                <Button onClick={() => setIsSubmitted(false)} variant="outline" className="mt-4">
+                <Button onClick={() => { setIsSubmitted(false); form.reset(); }} variant="outline" className="mt-4">
                     Submit Another Story
                 </Button>
             </div>
@@ -249,8 +267,8 @@ export function SubmissionForm() {
                         <p className="text-xs text-muted-foreground mt-1">JPG, PNG, MP4 (Max 10MB)</p>
                     </div>
 
-                    <Button type="submit" className="w-full rounded-full py-6 text-lg" disabled={isSubmitting}>
-                        {isSubmitting ? (
+                    <Button type="submit" className="w-full rounded-full py-6 text-lg" disabled={isPending}>
+                        {isPending ? (
                             <>
                                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                                 Submitting...

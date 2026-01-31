@@ -1,27 +1,38 @@
-import { STORIES } from "@/lib/data"
 import { notFound } from "next/navigation"
 import Image from "next/image"
 import Link from "next/link"
 import { ArrowLeft, Facebook, Linkedin, Twitter, Link as LinkIcon } from "lucide-react"
 import { StoryCard } from "@/components/stories/StoryCard"
 import { Button } from "@/components/ui/button"
-
-export async function generateStaticParams() {
-    return STORIES.map((story) => ({
-        id: story.id,
-    }))
-}
+import db from "@/lib/db"
 
 export default async function SingleStoryPage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = await params
-    const story = STORIES.find(s => s.id === id)
+
+    // Fetch story from DB
+    const story = await db.story.findUnique({
+        where: { id }
+    })
 
     if (!story) {
         notFound()
     }
 
-    // Related stories (exclude current)
-    const related = STORIES.filter(s => s.id !== story.id).slice(0, 3)
+    // Fetch related stories (just get 3 random recent ones for now)
+    const relatedDb = await db.story.findMany({
+        where: { id: { not: id }, status: { not: "REJECTED" } },
+        take: 3,
+        orderBy: { createdAt: 'desc' }
+    })
+
+    const related = relatedDb.map(s => ({
+        id: s.id,
+        type: s.type as "written" | "photo" | "video",
+        title: s.title,
+        excerpt: s.excerpt || s.content.substring(0, 150) + "...",
+        authorName: s.authorName || "Anonymous",
+        image: s.imageUrl || "/images/generated/story-context.png"
+    }))
 
     return (
         <div className="bg-background min-h-screen pb-24">
@@ -36,8 +47,9 @@ export default async function SingleStoryPage({ params }: { params: Promise<{ id
             {/* Featured Image */}
             <div className="max-w-4xl mx-auto px-4 mb-12">
                 <div className="relative aspect-video rounded-2xl overflow-hidden shadow-xl">
+                    {/* Fallback image if none */}
                     <Image
-                        src={story.image}
+                        src={story.imageUrl || "/images/generated/story-context.png"}
                         alt={story.title}
                         fill
                         className="object-cover"
@@ -58,33 +70,22 @@ export default async function SingleStoryPage({ params }: { params: Promise<{ id
                     <div className="flex items-center justify-center text-muted-foreground gap-4">
                         <span className="font-medium text-foreground">{story.authorName}</span>
                         <span>•</span>
-                        <time>December 15, 2024</time>
+                        <time>{new Date(story.createdAt).toLocaleDateString()}</time>
                     </div>
                 </header>
 
-                <div className="prose prose-lg prose-headings:font-serif prose-headings:text-foreground prose-p:text-muted-foreground prose-a:text-primary max-w-none mb-16">
+                <div className="prose prose-lg prose-headings:font-serif prose-headings:text-foreground prose-p:text-muted-foreground prose-a:text-primary max-w-none mb-16 whitespace-pre-line">
                     <p className="lead text-xl md:text-2xl font-serif text-muted-foreground/80 italic mb-8 border-l-4 border-primary pl-6">
-                        "{story.excerpt}"
+                        "{story.excerpt || story.content.substring(0, 100)}"
                     </p>
+                    {/* Render content directly for now (text only support) */}
                     <p>
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                        {story.content}
                     </p>
-                    <p>
-                        Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-                    </p>
-                    <h3>Finding the Courage</h3>
-                    <p>
-                        Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.
-                    </p>
-                    <p>
-                        Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet.
-                    </p>
+
                     <div className="my-8 relative h-64 md:h-96 rounded-xl overflow-hidden">
                         <Image src="/images/generated/story-context.png" alt="Contextual image" fill className="object-cover" />
                     </div>
-                    <p>
-                        At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident.
-                    </p>
                 </div>
 
                 {/* Share */}
@@ -114,7 +115,7 @@ export default async function SingleStoryPage({ params }: { params: Promise<{ id
                 <h2 className="font-serif text-3xl font-medium mb-12 text-center">More Stories Like This</h2>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                     {related.map(story => (
-                        <StoryCard key={story.id} story={story} />
+                        <StoryCard key={story.id} story={story as any} />
                     ))}
                 </div>
             </section>

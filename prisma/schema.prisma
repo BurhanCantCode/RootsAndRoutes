@@ -1,0 +1,67 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+}
+
+enum StoryType {
+  written
+  video
+  photo
+}
+
+enum StoryStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  ARCHIVED
+}
+
+model Story {
+  id          String      @id @default(uuid())
+  title       String
+  excerpt     String?     @db.Text
+  content     String      @db.Text
+  type        StoryType
+  status      StoryStatus @default(PENDING)
+  
+  // Author Info
+  authorName  String?     // Optional if anonymous
+  authorEmail String
+  isAnonymous Boolean     @default(false)
+  
+  // Media
+  imageUrl    String?
+  videoUrl    String?
+
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  publishedAt DateTime?   // When it was approved/published
+
+  @@index([status])
+  @@index([type])
+}
+
+model ContactMessage {
+  id        String   @id @default(uuid())
+  name      String
+  email     String
+  message   String   @db.Text
+  isRead    Boolean  @default(false)
+  
+  createdAt DateTime @default(now())
+}
+
+// If we want to store admin users or user profiles later
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  name      String?
+  role      String   @default("user") // "admin", "user"
+  createdAt DateTime @default(now())
+}
