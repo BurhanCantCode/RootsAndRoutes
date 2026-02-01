@@ -1,6 +1,7 @@
 import { ArrowRight } from "lucide-react"
 import Link from "next/link"
 import db from "@/lib/db"
+import type { Story } from "@prisma/client"
 
 export const dynamic = 'force-dynamic'
 
@@ -30,7 +31,7 @@ export default async function SubmissionsPage() {
                             </Link>
                         </div>
                     ) : (
-                        submissions.map((sub) => (
+                        submissions.map((sub: Story) => (
                             <Link
                                 key={sub.id}
                                 href={`/admin/submissions/${sub.id}`}

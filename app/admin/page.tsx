@@ -2,6 +2,7 @@ import { ArrowRight } from "lucide-react"
 import Link from "next/link"
 import db from "@/lib/db"
 import { getAdminStats } from "@/app/actions"
+import type { Story } from "@prisma/client"
 
 export const dynamic = 'force-dynamic'
 
@@ -61,7 +62,7 @@ export default async function AdminDashboard() {
                             No pending stories. All caught up! 🎉
                         </div>
                     ) : (
-                        recentSubmissions.map((sub) => (
+                        recentSubmissions.map((sub: Story) => (
                             <div key={sub.id} className="px-6 py-4 flex items-center justify-between hover:bg-slate-50 transition-colors">
                                 <div>
                                     <p className="font-medium text-slate-900">{sub.title}</p>

@@ -128,7 +128,7 @@ import { redirect } from "next/navigation"
 const ADMIN_SECRET = process.env.ADMIN_PASSWORD || "secret"
 const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET || "default-jwt-secret")
 
-export async function loginAdmin(prevState: any, formData: FormData) {
+export async function loginAdmin(prevState: { success: boolean; message?: string }, formData: FormData) {
     const email = formData.get("email") as string
     const password = formData.get("password") as string
 
