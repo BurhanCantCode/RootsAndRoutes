@@ -19,7 +19,7 @@ export type FormState = {
     message: string
     success: boolean
     fields?: Record<string, any>
-    errors?: Record<string, string[]> // Change errors to allow array of strings per field
+    errors?: Record<string, string[]>
 }
 
 export async function submitStory(prevState: FormState, formData: FormData): Promise<FormState> {
@@ -80,8 +80,91 @@ export async function submitStory(prevState: FormState, formData: FormData): Pro
     }
 }
 
+export async function updateStoryStatus(id: string, status: "APPROVED" | "REJECTED") {
+    try {
+        await db.story.update({
+            where: { id },
+            data: {
+                status,
+                publishedAt: status === "APPROVED" ? new Date() : null
+            }
+        })
+
+        revalidatePath("/admin")
+        revalidatePath("/admin/submissions")
+        revalidatePath("/stories")
+        revalidatePath(`/stories/${id}`)
+
+        return { success: true }
+    } catch (error) {
+        console.error("Error updating status:", error)
+        return { success: false, error: "Failed to update status" }
+    }
+}
+
+export async function getAdminStats() {
+    const [pending, approved, rejected, total] = await Promise.all([
+        db.story.count({ where: { status: "PENDING" } }),
+        db.story.count({ where: { status: "APPROVED" } }),
+        db.story.count({ where: { status: "REJECTED" } }),
+        db.story.count()
+    ])
+
+    return {
+        pending,
+        approved,
+        rejected,
+        total
+    }
+}
+
+// ... existing imports ...
+import { SignJWT } from "jose"
+import { cookies } from "next/headers"
+import { redirect } from "next/navigation"
+
+// ... existing code ...
+
+const ADMIN_SECRET = process.env.ADMIN_PASSWORD || "secret"
+const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET || "default-jwt-secret")
+
+export async function loginAdmin(prevState: any, formData: FormData) {
+    const email = formData.get("email") as string
+    const password = formData.get("password") as string
+
+    // Simple check against env inputs
+    if (email === process.env.ADMIN_EMAIL && password === process.env.ADMIN_PASSWORD) {
+        // Create JWT
+        const token = await new SignJWT({ email })
+            .setProtectedHeader({ alg: 'HS256' })
+            .setIssuedAt()
+            .setExpirationTime('24h')
+            .sign(JWT_SECRET)
+
+        // Set Cookie
+        const cookieStore = await cookies()
+        cookieStore.set('admin-token', token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'lax',
+            path: '/'
+        })
+
+        return { success: true }
+    }
+
+    return { success: false, message: "Invalid credentials" }
+}
+
+export async function logoutAdmin() {
+    const cookieStore = await cookies()
+    cookieStore.delete('admin-token')
+    redirect("/admin/login")
+}
+
 // Helper to get a nice placeholder image for demo purposes
 function getRandomImage(type: string): string {
+    // ... existing code ...
     const images = [
         "/images/generated/story-sarah.png",
         "/images/generated/story-james.png",

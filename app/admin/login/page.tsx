@@ -1,21 +1,21 @@
 "use client"
 
-import { useState } from "react"
+import { loginAdmin } from "@/app/actions"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Sprout } from "lucide-react"
+import { useActionState } from "react"
 
 export default function AdminLoginPage() {
-    const [isLoading, setIsLoading] = useState(false)
+    const [state, formAction, isPending] = useActionState(loginAdmin, { success: false, message: "" })
 
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault()
-        setIsLoading(true)
-        setTimeout(() => {
-            setIsLoading(false)
-            window.location.href = "/admin"
-        }, 1000)
+    if (state?.success) {
+        // Client-side redirect after success (or middleware redirects on refresh)
+        // But better to redirect in action? Action returns object. 
+        // Let's use window location or router for immediate effect if action didn't redirect.
+        // Actually, action set cookie, so redirecting client side is fine.
+        if (typeof window !== 'undefined') window.location.href = "/admin"
     }
 
     return (
@@ -29,22 +29,27 @@ export default function AdminLoginPage() {
                     <p className="text-slate-500">Sign in to manage Roots & Routes</p>
                 </div>
 
-                <form onSubmit={handleSubmit} className="space-y-4">
+                <form action={formAction} className="space-y-4">
                     <div className="space-y-2">
                         <Label htmlFor="email">Email</Label>
-                        <Input id="email" type="email" placeholder="admin@rootsandroutes.org" required />
+                        <Input name="email" type="email" placeholder="admin@rootsandroutes.org" required />
                     </div>
                     <div className="space-y-2">
                         <Label htmlFor="password">Password</Label>
-                        <Input id="password" type="password" required />
+                        <Input name="password" type="password" required />
                     </div>
-                    <Button type="submit" className="w-full" disabled={isLoading}>
-                        {isLoading ? "Signing in..." : "Sign in"}
+
+                    {state?.message && !state.success && (
+                        <p className="text-red-500 text-sm font-medium">{state.message}</p>
+                    )}
+
+                    <Button type="submit" className="w-full" disabled={isPending}>
+                        {isPending ? "Signing in..." : "Sign in"}
                     </Button>
                 </form>
 
                 <div className="text-center text-sm text-slate-400">
-                    For demo purposes, any credentials will work.
+                    Secure Admin Portal
                 </div>
             </div>
         </div>

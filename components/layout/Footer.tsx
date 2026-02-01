@@ -1,13 +1,22 @@
+"use client"
+
 import React from 'react';
 import Link from 'next/link';
 import { Sprout, Linkedin, Instagram } from 'lucide-react';
+import { usePathname } from 'next/navigation';
+import { cn } from '@/lib/utils';
 
 export function Footer() {
     const currentYear = new Date().getFullYear();
+    const pathname = usePathname();
 
     return (
-        <footer className="bg-light-green border-t border-border/50">
+        <footer className={cn(
+            "bg-light-green border-t border-border/50",
+            pathname?.startsWith("/admin") && "md:ml-64 md:w-[calc(100%-16rem)]"
+        )}>
             <div className="max-w-7xl mx-auto px-4 py-12 md:py-16">
+                {/* ... rest of footer ... */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
                     {/* Column 1: Brand */}
                     <div className="space-y-4">

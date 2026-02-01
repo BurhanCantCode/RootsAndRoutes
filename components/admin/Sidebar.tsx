@@ -14,6 +14,7 @@ import {
     Settings,
     LogOut
 } from "lucide-react"
+import { logoutAdmin } from "@/app/actions"
 
 const adminNav = [
     { label: "Dashboard", href: "/admin", icon: LayoutDashboard },
@@ -30,7 +31,7 @@ export function AdminSidebar() {
     const pathname = usePathname()
 
     return (
-        <aside className="w-64 bg-slate-900 text-white min-h-screen flex flex-col fixed left-0 top-0 bottom-0 overflow-y-auto">
+        <aside className="w-64 bg-slate-900 text-white flex flex-col fixed left-0 top-0 bottom-0 overflow-y-auto z-[60]">
             <div className="p-6 border-b border-slate-800">
                 <h2 className="font-serif text-xl font-bold">Admin Panel</h2>
             </div>
@@ -59,10 +60,12 @@ export function AdminSidebar() {
             </nav>
 
             <div className="p-4 mt-auto border-t border-slate-800">
-                <button className="flex items-center gap-3 w-full px-4 py-3 rounded-lg text-sm font-medium text-red-400 hover:bg-slate-800 hover:text-red-300 transition-colors">
-                    <LogOut className="w-5 h-5" />
-                    Logout
-                </button>
+                <form action={logoutAdmin}>
+                    <button type="submit" className="flex items-center gap-3 w-full px-4 py-3 rounded-lg text-sm font-medium text-red-400 hover:bg-slate-800 hover:text-red-300 transition-colors">
+                        <LogOut className="w-5 h-5" />
+                        Logout
+                    </button>
+                </form>
             </div>
         </aside>
     )

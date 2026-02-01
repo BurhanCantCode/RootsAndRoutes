@@ -23,7 +23,10 @@ export function Header() {
     const [isOpen, setIsOpen] = React.useState(false)
 
     return (
-        <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+        <header className={cn(
+            "sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60",
+            pathname?.startsWith("/admin") && "md:ml-64 md:w-[calc(100%-16rem)]"
+        )}>
             <div className="max-w-7xl mx-auto flex h-16 items-center justify-between px-4 sm:px-8">
                 {/* Logo */}
                 <Link href="/" className="flex items-center gap-2 font-serif text-xl font-bold tracking-tight text-primary">
