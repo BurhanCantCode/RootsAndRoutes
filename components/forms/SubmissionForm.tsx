@@ -29,13 +29,13 @@ import { toast } from "sonner" // Assuming you might have sonner/toast, if not w
 
 const formSchema = z.object({
     name: z.string().optional(),
-    isAnonymous: z.boolean().default(false),
+    isAnonymous: z.boolean(),
     email: z.string().email({ message: "Please enter a valid email address." }),
     storyType: z.enum(["written", "photo", "video"]),
     title: z.string().min(5, { message: "Title must be at least 5 characters." }),
     content: z.string().min(50, { message: "Story must be at least 50 characters." }),
-    termsAccepted: z.literal(true, {
-        errorMap: () => ({ message: "You must accept the terms and guidelines." }),
+    termsAccepted: z.literal(true).refine((val) => val === true, {
+        message: "You must accept the terms and guidelines."
     }),
 })
 
