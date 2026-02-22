@@ -25,12 +25,12 @@ export type FormState = {
 export async function submitStory(prevState: FormState, formData: FormData): Promise<FormState> {
     // 1. Extract and validate data
     const rawData = {
-        name: formData.get("name") as string,
+        name: (formData.get("name") as string) || undefined,
         isAnonymous: formData.get("isAnonymous") === "true",
-        email: formData.get("email") as string,
+        email: (formData.get("email") as string) || undefined,
         storyTypes: formData.getAll("storyTypes") as ("written" | "photo" | "video")[],
-        title: formData.get("title") as string,
-        content: formData.get("content") as string,
+        title: (formData.get("title") as string) || "",
+        content: (formData.get("content") as string) || "",
         termsAccepted: formData.get("termsAccepted") === "true",
     }
 
