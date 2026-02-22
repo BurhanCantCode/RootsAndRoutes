@@ -32,7 +32,7 @@ model Story {
   
   // Author Info
   authorName  String?     // Optional if anonymous
-  authorEmail String
+  authorEmail String?
   isAnonymous Boolean     @default(false)
   
   // Media

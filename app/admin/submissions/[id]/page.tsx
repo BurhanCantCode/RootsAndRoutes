@@ -85,7 +85,7 @@ export default async function ReviewPage({ params }: { params: Promise<{ id: str
                                 </div>
                                 <div>
                                     <p className="text-sm font-medium text-slate-900 max-w-[200px] break-all">
-                                        {story.authorEmail}
+                                        {story.authorEmail || "Not provided"}
                                     </p>
                                     <p className="text-xs text-slate-500">Private (Not shown publicly)</p>
                                 </div>

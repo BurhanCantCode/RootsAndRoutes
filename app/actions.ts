@@ -8,7 +8,7 @@ import { z } from "zod"
 const submissionSchema = z.object({
     name: z.string().optional(),
     isAnonymous: z.boolean(),
-    email: z.string().email(),
+    email: z.string().email().optional().or(z.literal("")),
     storyType: z.enum(["written", "photo", "video"]),
     title: z.string().min(5),
     content: z.string().min(50),
@@ -53,7 +53,7 @@ export async function submitStory(prevState: FormState, formData: FormData): Pro
                 title: validated.data.title,
                 content: validated.data.content,
                 type: validated.data.storyType,
-                authorEmail: validated.data.email,
+                authorEmail: validated.data.email ?? null,
                 authorName: validated.data.name || "Anonymous", // Use provided name or default
                 isAnonymous: validated.data.isAnonymous,
                 // Assign a random placeholder image based on type for now, since we don't have real upload yet

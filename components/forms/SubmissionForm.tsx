@@ -30,7 +30,7 @@ import { toast } from "sonner" // Assuming you might have sonner/toast, if not w
 const formSchema = z.object({
     name: z.string().optional(),
     isAnonymous: z.boolean(),
-    email: z.string().email({ message: "Please enter a valid email address." }),
+    email: z.string().email({ message: "Please enter a valid email address." }).optional().or(z.literal("")),
     storyType: z.enum(["written", "photo", "video"]),
     title: z.string().min(5, { message: "Title must be at least 5 characters." }),
     content: z.string().min(50, { message: "Story must be at least 50 characters." }),
@@ -60,7 +60,7 @@ export function SubmissionForm() {
         const formData = new FormData()
         if (values.name) formData.append("name", values.name)
         formData.append("isAnonymous", String(values.isAnonymous))
-        formData.append("email", values.email)
+        formData.append("email", values.email ?? "")
         formData.append("storyType", values.storyType)
         formData.append("title", values.title)
         formData.append("content", values.content)
@@ -173,7 +173,7 @@ export function SubmissionForm() {
                         name="email"
                         render={({ field }) => (
                             <FormItem>
-                                <FormLabel>Email Address *</FormLabel>
+                                <FormLabel>Email Address (Optional)</FormLabel>
                                 <FormControl>
                                     <Input placeholder="you@example.com" {...field} />
                                 </FormControl>
