@@ -27,7 +27,7 @@ export default async function SingleStoryPage({ params }: { params: Promise<{ id
 
     const related = relatedDb.map(s => ({
         id: s.id,
-        type: s.type as "written" | "photo" | "video",
+        type: s.types[0] as "written" | "photo" | "video",
         title: s.title,
         excerpt: s.excerpt || s.content.substring(0, 150) + "...",
         authorName: s.authorName || "Anonymous",
@@ -62,13 +62,15 @@ export default async function SingleStoryPage({ params }: { params: Promise<{ id
             <article className="max-w-3xl mx-auto px-4">
                 <header className="mb-12 text-center">
                     <span className="inline-block bg-secondary text-primary px-3 py-1 rounded-full text-sm font-bold uppercase tracking-wider mb-6">
-                        {story.type} Story
+                        {story.types.join(" & ")} Story
                     </span>
                     <h1 className="font-serif text-4xl md:text-5xl font-bold text-foreground mb-6 leading-tight">
                         {story.title}
                     </h1>
                     <div className="flex items-center justify-center text-muted-foreground gap-4">
-                        <span className="font-medium text-foreground">{story.authorName}</span>
+                        <span className="font-medium text-foreground">
+                            {story.isAnonymous ? "Anonymous" : (story.authorName || "Anonymous")}
+                        </span>
                         <span>•</span>
                         <time>{new Date(story.createdAt).toLocaleDateString()}</time>
                     </div>

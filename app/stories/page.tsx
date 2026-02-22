@@ -14,10 +14,10 @@ export default async function StoriesPage() {
     // Map Prisma result to the shape expected by UI
     const mappedStories = stories.map(s => ({
         id: s.id,
-        type: s.type as "written" | "photo" | "video",
+        type: s.types[0] as "written" | "photo" | "video",
         title: s.title,
         excerpt: s.excerpt || s.content.substring(0, 150) + "...",
-        authorName: s.authorName || "Anonymous",
+        authorName: s.isAnonymous ? "Anonymous" : (s.authorName || "Anonymous"),
         image: s.imageUrl || "/images/generated/story-context.png" // Fallback
     }))
 

@@ -41,10 +41,10 @@ export default async function SubmissionsPage() {
                                     <div className="space-y-1">
                                         <div className="flex items-center gap-3">
                                             <span className={`px-2 py-0.5 rounded text-xs font-medium uppercase tracking-wide
-                                                ${sub.type === 'written' ? 'bg-blue-100 text-blue-700' :
-                                                    sub.type === 'photo' ? 'bg-purple-100 text-purple-700' :
+                                                ${sub.types.includes('written') ? 'bg-blue-100 text-blue-700' :
+                                                    sub.types.includes('photo') ? 'bg-purple-100 text-purple-700' :
                                                         'bg-pink-100 text-pink-700'}`}>
-                                                {sub.type}
+                                                {sub.types.join(", ")}
                                             </span>
                                             <span className="text-sm text-slate-400">
                                                 {new Date(sub.createdAt).toLocaleDateString()}

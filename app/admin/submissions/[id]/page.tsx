@@ -32,7 +32,7 @@ export default async function ReviewPage({ params }: { params: Promise<{ id: str
                     <div className="bg-white p-8 rounded-xl shadow-sm border border-slate-200">
                         <div className="mb-6">
                             <span className="px-2 py-1 bg-slate-100 text-slate-600 rounded text-xs font-bold uppercase tracking-wide">
-                                {story.type}
+                                {story.types.join(", ")}
                             </span>
                             <h1 className="text-3xl font-bold text-slate-900 mt-3">{story.title}</h1>
                             <p className="text-lg text-slate-600 mt-2 font-serif italic">

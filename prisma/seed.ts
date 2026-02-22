@@ -84,7 +84,7 @@ async function main() {
                     content: story.content,
                     authorName: story.authorName,
                     authorEmail: story.authorEmail,
-                    type: story.type as any,
+                    types: [story.type as any],
                     imageUrl: story.imageUrl,
                     status: story.status as any,
                     isAnonymous: story.isAnonymous || false

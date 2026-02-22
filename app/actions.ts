@@ -9,7 +9,7 @@ const submissionSchema = z.object({
     name: z.string().optional(),
     isAnonymous: z.boolean(),
     email: z.string().email().optional().or(z.literal("")),
-    storyType: z.enum(["written", "photo", "video"]),
+    storyTypes: z.array(z.enum(["written", "photo", "video"])).min(1),
     title: z.string().min(5),
     content: z.string().min(50),
     termsAccepted: z.literal(true),
@@ -28,7 +28,7 @@ export async function submitStory(prevState: FormState, formData: FormData): Pro
         name: formData.get("name") as string,
         isAnonymous: formData.get("isAnonymous") === "true",
         email: formData.get("email") as string,
-        storyType: formData.get("storyType") as "written" | "photo" | "video",
+        storyTypes: formData.getAll("storyTypes") as ("written" | "photo" | "video")[],
         title: formData.get("title") as string,
         content: formData.get("content") as string,
         termsAccepted: formData.get("termsAccepted") === "true",
@@ -52,12 +52,12 @@ export async function submitStory(prevState: FormState, formData: FormData): Pro
             data: {
                 title: validated.data.title,
                 content: validated.data.content,
-                type: validated.data.storyType,
-                authorEmail: validated.data.email ?? null,
+                types: validated.data.storyTypes,
+                authorEmail: (validated.data.email ?? null) as any,
                 authorName: validated.data.name || "Anonymous", // Use provided name or default
                 isAnonymous: validated.data.isAnonymous,
                 // Assign a random placeholder image based on type for now, since we don't have real upload yet
-                imageUrl: getRandomImage(validated.data.storyType),
+                imageUrl: getRandomImage(validated.data.storyTypes[0]),
                 status: "PENDING", // Default status
             }
         })

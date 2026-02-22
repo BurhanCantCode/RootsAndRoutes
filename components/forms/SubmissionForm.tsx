@@ -31,7 +31,7 @@ const formSchema = z.object({
     name: z.string().optional(),
     isAnonymous: z.boolean(),
     email: z.string().email({ message: "Please enter a valid email address." }).optional().or(z.literal("")),
-    storyType: z.enum(["written", "photo", "video"]),
+    storyType: z.array(z.enum(["written", "photo", "video"])).min(1, { message: "Please select at least one story type." }),
     title: z.string().min(5, { message: "Title must be at least 5 characters." }),
     content: z.string().min(50, { message: "Story must be at least 50 characters." }),
     termsAccepted: z.literal(true).refine((val) => val === true, {
@@ -51,7 +51,7 @@ export function SubmissionForm() {
             email: "",
             content: "",
             title: "",
-            storyType: "written",
+            storyType: ["written"],
         },
     })
 
@@ -61,7 +61,9 @@ export function SubmissionForm() {
         if (values.name) formData.append("name", values.name)
         formData.append("isAnonymous", String(values.isAnonymous))
         formData.append("email", values.email ?? "")
-        formData.append("storyType", values.storyType)
+        values.storyType.forEach(type => {
+            formData.append("storyTypes", type)
+        })
         formData.append("title", values.title)
         formData.append("content", values.content)
         formData.append("termsAccepted", String(values.termsAccepted))
@@ -87,7 +89,7 @@ export function SubmissionForm() {
                 </div>
                 <h3 className="text-3xl font-serif font-medium">Thank you for sharing!</h3>
                 <p className="text-muted-foreground max-w-lg mx-auto">
-                    Your story has been submitted and is now under review. We'll notify you by email once it's published.
+                    Your story has been submitted and is now under review. {form.getValues("email") ? "We'll notify you by email once it's published." : "Check back soon to see it live!"}
                 </p>
                 <Button onClick={() => { setIsSubmitted(false); form.reset(); }} variant="outline" className="mt-4">
                     Submit Another Story
@@ -111,6 +113,7 @@ export function SubmissionForm() {
                             <li>No racist, sexist, or discriminatory content</li>
                             <li>Share your own authentic experience</li>
                             <li>You may remain anonymous if preferred</li>
+                            <li>Read our <a href="https://www.canva.com/design/DAG0HHv2KIg/ST_qmsocumXqdkBaPDivOQ/view?utm_content=DAG0HHv2KIg&utm_campaign=designshare&utm_medium=link&utm_source=viewer" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline font-medium">Terms of Use</a></li>
                         </ul>
 
                         <FormField
@@ -188,41 +191,50 @@ export function SubmissionForm() {
                     <FormField
                         control={form.control}
                         name="storyType"
-                        render={({ field }) => (
-                            <FormItem className="space-y-3">
-                                <FormLabel>Story Type *</FormLabel>
-                                <FormControl>
-                                    <RadioGroup
-                                        onValueChange={field.onChange}
-                                        defaultValue={field.value}
-                                        className="flex flex-col sm:flex-row gap-4"
-                                    >
-                                        <FormItem className="flex items-center space-x-3 space-y-0">
-                                            <FormControl>
-                                                <RadioGroupItem value="written" />
-                                            </FormControl>
-                                            <FormLabel className="font-normal">
-                                                Written Story
-                                            </FormLabel>
-                                        </FormItem>
-                                        <FormItem className="flex items-center space-x-3 space-y-0">
-                                            <FormControl>
-                                                <RadioGroupItem value="photo" />
-                                            </FormControl>
-                                            <FormLabel className="font-normal">
-                                                Photo
-                                            </FormLabel>
-                                        </FormItem>
-                                        <FormItem className="flex items-center space-x-3 space-y-0">
-                                            <FormControl>
-                                                <RadioGroupItem value="video" />
-                                            </FormControl>
-                                            <FormLabel className="font-normal">
-                                                Video
-                                            </FormLabel>
-                                        </FormItem>
-                                    </RadioGroup>
-                                </FormControl>
+                        render={() => (
+                            <FormItem>
+                                <div className="mb-4">
+                                    <FormLabel className="text-base">Story Type *</FormLabel>
+                                    <FormDescription>
+                                        Select all that apply to your submission.
+                                    </FormDescription>
+                                </div>
+                                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                                    {["written", "photo", "video"].map((type) => (
+                                        <FormField
+                                            key={type}
+                                            control={form.control}
+                                            name="storyType"
+                                            render={({ field }) => {
+                                                const label = type === "written" ? "Written Story" : (type as string).charAt(0).toUpperCase() + (type as string).slice(1);
+                                                return (
+                                                    <FormItem
+                                                        key={type}
+                                                        className="flex flex-row items-start space-x-3 space-y-0"
+                                                    >
+                                                        <FormControl>
+                                                            <Checkbox
+                                                                checked={field.value?.includes(type as any)}
+                                                                onCheckedChange={(checked) => {
+                                                                    return checked
+                                                                        ? field.onChange([...field.value, type])
+                                                                        : field.onChange(
+                                                                            field.value?.filter(
+                                                                                (value: "written" | "photo" | "video") => value !== type
+                                                                            )
+                                                                        )
+                                                                }}
+                                                            />
+                                                        </FormControl>
+                                                        <FormLabel className="font-normal capitalize cursor-pointer">
+                                                            {label}
+                                                        </FormLabel>
+                                                    </FormItem>
+                                                )
+                                            }}
+                                        />
+                                    ))}
+                                </div>
                                 <FormMessage />
                             </FormItem>
                         )}

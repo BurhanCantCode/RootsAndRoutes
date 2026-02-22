@@ -27,7 +27,7 @@ model Story {
   title       String
   excerpt     String?     @db.Text
   content     String      @db.Text
-  type        StoryType
+  types       StoryType[]
   status      StoryStatus @default(PENDING)
   
   // Author Info
@@ -44,7 +44,7 @@ model Story {
   publishedAt DateTime?   // When it was approved/published
 
   @@index([status])
-  @@index([type])
+  @@index([types])
 }
 
 model ContactMessage {
