@@ -14,13 +14,13 @@ export default async function SingleStoryPage({ params }: { params: Promise<{ id
         where: { id }
     })
 
-    if (!story) {
+    if (!story || story.status !== "APPROVED") {
         notFound()
     }
 
     // Fetch related stories (just get 3 random recent ones for now)
     const relatedDb = await db.story.findMany({
-        where: { id: { not: id }, status: { not: "REJECTED" } },
+        where: { id: { not: id }, status: "APPROVED" },
         take: 3,
         orderBy: { createdAt: 'desc' }
     })

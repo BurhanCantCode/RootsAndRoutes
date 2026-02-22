@@ -8,7 +8,7 @@ export default async function StoriesPage() {
     // Fetch stories from database
     const stories = await db.story.findMany({
         orderBy: { createdAt: 'desc' },
-        where: { status: { not: "REJECTED" } } // Show PENDING for now so user sees their submission, or strictly APPROVED
+        where: { status: "APPROVED" }
     })
 
     // Map Prisma result to the shape expected by UI
