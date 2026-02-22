@@ -4,6 +4,10 @@ import { PrismaClient } from '@prisma/client'
 
 const connectionString = process.env.DIRECT_URL || process.env.DATABASE_URL
 
+if (!connectionString) {
+    throw new Error('Missing database connection string. Set DIRECT_URL or DATABASE_URL environment variable.')
+}
+
 const pool = new Pool({ connectionString })
 const adapter = new PrismaPg(pool)
 

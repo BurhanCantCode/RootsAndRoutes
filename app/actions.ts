@@ -72,9 +72,10 @@ export async function submitStory(prevState: FormState, formData: FormData): Pro
         }
     } catch (error) {
         console.error("Submission error:", error)
+        const errorMessage = error instanceof Error ? error.message : "Unknown error"
         return {
             success: false,
-            message: "Failed to submit story. Please try again later.",
+            message: `Failed to submit story: ${errorMessage}`,
             fields: rawData
         }
     }
