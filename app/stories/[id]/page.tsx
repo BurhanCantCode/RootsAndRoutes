@@ -31,7 +31,7 @@ export default async function SingleStoryPage({ params }: { params: Promise<{ id
         title: s.title,
         excerpt: s.excerpt || s.content.substring(0, 150) + "...",
         authorName: s.authorName || "Anonymous",
-        image: s.imageUrl || "/images/generated/story-context.png"
+        image: s.imageUrl || (s.isAnonymous ? "/images/anonymous_profile.png" : "/images/generated/story-context.png")
     }))
 
     return (
@@ -49,7 +49,7 @@ export default async function SingleStoryPage({ params }: { params: Promise<{ id
                 <div className="relative aspect-video rounded-2xl overflow-hidden shadow-xl">
                     {/* Fallback image if none */}
                     <Image
-                        src={story.imageUrl || "/images/generated/story-context.png"}
+                        src={story.imageUrl || (story.isAnonymous ? "/images/anonymous_profile.png" : "/images/generated/story-context.png")}
                         alt={story.title}
                         fill
                         className="object-cover"

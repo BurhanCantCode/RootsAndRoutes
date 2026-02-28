@@ -29,7 +29,7 @@ export default function AboutPage() {
                 <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
                     <div className="relative aspect-[4/3] rounded-2xl overflow-hidden shadow-lg transform -rotate-1">
                         <Image
-                            src="/images/generated/about-team-working.png"
+                            src="/images/about_mission.png"
                             alt="Team working together"
                             fill
                             className="object-cover"
@@ -60,7 +60,7 @@ export default function AboutPage() {
                     </div>
                     <div className="order-1 md:order-2 relative aspect-[4/3] rounded-2xl overflow-hidden shadow-lg transform rotate-1">
                         <Image
-                            src="/images/generated/about-vision.png"
+                            src="/images/about_mission_vision.png"
                             alt="Visionary horizon"
                             fill
                             className="object-cover"

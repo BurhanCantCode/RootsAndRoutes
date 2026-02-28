@@ -39,8 +39,9 @@ export default function ContactPage() {
                                 <a href="#" className="w-10 h-10 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center transition-colors">
                                     <Linkedin className="w-5 h-5" />
                                 </a>
-                                <a href="#" className="w-10 h-10 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center transition-colors">
+                                <a href="https://www.instagram.com/rootsandroutes.global?igsh=MWQ0ODd0NzRjb3dpdQ%3D%3D&utm_source=qr" target="_blank" rel="noopener noreferrer" className="flex items-center gap-4 text-muted-foreground hover:text-primary transition-colors">
                                     <Instagram className="w-5 h-5" />
+                                    <span>@rootsandroutes.global</span>
                                 </a>
                             </div>
                         </div>
