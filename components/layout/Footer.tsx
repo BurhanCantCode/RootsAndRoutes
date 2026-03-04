@@ -50,7 +50,7 @@ export function Footer() {
                     <div>
                         <h3 className="font-serif text-lg font-semibold mb-4 text-foreground">Support</h3>
                         <ul className="space-y-3">
-                            {['Contact', 'FAQ', 'Privacy Policy', 'Terms of Use'].map((item) => (
+                            {['Contact', 'FAQ', 'Privacy Policy'].map((item) => (
                                 <li key={item}>
                                     <Link
                                         href={`/${item.toLowerCase().replace(' ', '-')}`}
@@ -80,7 +80,6 @@ export function Footer() {
                 <div className="pt-8 border-t border-primary/10 flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-muted-foreground">
                     <p>© {currentYear} Roots and Routes. All rights reserved.</p>
                     <div className="flex gap-6">
-                        <Link href="/terms-of-use" className="hover:text-primary">Terms of Use</Link>
                         <Link href="/privacy" className="hover:text-primary">Privacy Policy</Link>
                     </div>
                 </div>
