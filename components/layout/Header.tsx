@@ -2,8 +2,9 @@
 
 import * as React from "react"
 import Link from "next/link"
+import Image from "next/image"
 import { usePathname } from "next/navigation"
-import { Menu, Sprout } from "lucide-react"
+import { Menu } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTrigger, SheetTitle } from "@/components/ui/sheet"
@@ -30,7 +31,7 @@ export function Header() {
             <div className="max-w-7xl mx-auto flex h-16 items-center justify-between px-4 sm:px-8">
                 {/* Logo */}
                 <Link href="/" className="flex items-center gap-2 font-serif text-xl font-bold tracking-tight text-primary">
-                    <Sprout className="h-6 w-6" />
+                    <Image src="/images/logo.jpeg" alt="Roots & Routes" width={40} height={40} className="rounded-full mix-blend-multiply" />
                     <span>Roots & Routes</span>
                 </Link>
 
@@ -66,7 +67,7 @@ export function Header() {
                             <SheetTitle className="sr-only">Mobile Menu</SheetTitle>
                             <div className="flex flex-col gap-6 mt-8">
                                 <Link href="/" className="flex items-center gap-2 font-serif text-xl font-bold text-primary" onClick={() => setIsOpen(false)}>
-                                    <Sprout className="h-6 w-6" />
+                                    <Image src="/images/logo.jpeg" alt="Roots & Routes" width={40} height={40} className="rounded-full mix-blend-multiply" />
                                     <span>Roots & Routes</span>
                                 </Link>
                                 <nav className="flex flex-col gap-4">

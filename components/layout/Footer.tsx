@@ -2,7 +2,8 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { Sprout, Instagram } from 'lucide-react';
+import Image from 'next/image';
+import { Instagram } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 
@@ -21,7 +22,7 @@ export function Footer() {
                     {/* Column 1: Brand */}
                     <div className="space-y-4">
                         <Link href="/" className="flex items-center gap-2 font-serif text-xl font-bold text-primary">
-                            <Sprout className="h-6 w-6" />
+                            <Image src="/images/logo.jpeg" alt="Roots & Routes" width={32} height={32} className="rounded-full mix-blend-multiply" />
                             <span>Roots & Routes</span>
                         </Link>
                         <p className="text-muted-foreground leading-relaxed max-w-xs">
