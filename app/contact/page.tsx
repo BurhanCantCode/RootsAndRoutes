@@ -35,15 +35,12 @@ export default function ContactPage() {
 
                         <div className="mt-12">
                             <h3 className="font-medium mb-4">Follow Us</h3>
-                            <div className="flex gap-4">
-                                <a href="https://www.instagram.com/rootsandroutes.global?igsh=MWQ0ODd0NzRjb3dpdQ%3D%3D&utm_source=qr" target="_blank" rel="noopener noreferrer" className="w-10 h-10 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center transition-colors">
+                            <a href="https://www.instagram.com/rootsandroutes.global?igsh=MWQ0ODd0NzRjb3dpdQ%3D%3D&utm_source=qr" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 hover:opacity-80 transition-opacity">
+                                <div className="w-10 h-10 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center transition-colors">
                                     <Instagram className="w-5 h-5" />
-                                </a>
-                                <a href="https://www.instagram.com/rootsandroutes.global?igsh=MWQ0ODd0NzRjb3dpdQ%3D%3D&utm_source=qr" target="_blank" rel="noopener noreferrer" className="flex items-center gap-4 text-muted-foreground hover:text-primary transition-colors">
-                                    <Instagram className="w-5 h-5" />
-                                    <span>@rootsandroutes.global</span>
-                                </a>
-                            </div>
+                                </div>
+                                <span>@rootsandroutes.global</span>
+                            </a>
                         </div>
                     </div>
 
