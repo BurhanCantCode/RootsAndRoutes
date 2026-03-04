@@ -75,10 +75,7 @@ export default function AboutPage() {
                     <h2 className="font-serif text-4xl font-medium text-foreground">Our Story</h2>
                     <div className="text-lg text-muted-foreground space-y-6 leading-relaxed text-left">
                         <p>
-                            Roots and Routes began in 2024 as a small community project. The founders realized that whilst statistics about discrimination were widely available, the human stories—the emotional toll, the day-to-day reality—were often missing from the conversation.
-                        </p>
-                        <p>
-                            What started as a simple blog has grown into a global platform. We've collected hundreds of stories from over 30 countries, each one adding to a tapestry of truth that we hope will blanket the world in empathy.
+                            Roots and Routes began with a simple idea: to bring unseen stories into the light. The founders wanted to create a space where these unseen experiences could be shared, recognized, and remembered. This website is that space: a platform for voices too often overlooked. Some stories are brief, some long; some polished, some raw. All are welcome, all matter. Roots and Routes exists to give attention to the unheard—and to ensure that their stories continue to travel, connect, and inspire.
                         </p>
                     </div>
                 </div>
