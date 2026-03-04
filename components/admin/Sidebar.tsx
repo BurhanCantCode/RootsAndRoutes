@@ -5,26 +5,14 @@ import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
 import {
     LayoutDashboard,
-    Home,
-    FileText,
-    BookOpen,
     Inbox,
-    HelpCircle,
-    MessageSquare,
-    Settings,
     LogOut
 } from "lucide-react"
 import { logoutAdmin } from "@/app/actions"
 
 const adminNav = [
     { label: "Dashboard", href: "/admin", icon: LayoutDashboard },
-    { label: "Homepage", href: "/admin/homepage", icon: Home },
-    { label: "About Page", href: "/admin/about", icon: FileText },
-    { label: "Stories", href: "/admin/stories", icon: BookOpen },
     { label: "Submissions", href: "/admin/submissions", icon: Inbox },
-    { label: "FAQ", href: "/admin/faq", icon: HelpCircle },
-    { label: "Contact Forms", href: "/admin/contacts", icon: MessageSquare },
-    { label: "Settings", href: "/admin/settings", icon: Settings },
 ]
 
 export function AdminSidebar() {

@@ -1,10 +1,10 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useRef, useTransition } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import * as z from "zod"
-import { Loader2, Check, UploadCloud } from "lucide-react"
+import { Loader2, Check, UploadCloud, X, FileImage, Film } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -19,13 +19,8 @@ import {
     FormLabel,
     FormMessage,
 } from "@/components/ui/form"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { submitStory } from "@/app/actions"
-// We need to use useActionState (new hook) or useFormState (older but common in 14)
-// Since this is Next.js 14+, let's try to keep it simple with a transition or direct call
-// Actually, combining react-hook-form with server actions is easiest by wrapping the action
-import { useTransition } from "react"
-import { toast } from "sonner" // Assuming you might have sonner/toast, if not we'll use local state
+import { supabase } from "@/lib/supabase"
 
 const formSchema = z.object({
     name: z.string().optional(),
@@ -39,9 +34,18 @@ const formSchema = z.object({
     }),
 })
 
+const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"]
+const ACCEPTED_VIDEO_TYPES = ["video/mp4", "video/webm", "video/mov"]
+const MAX_FILE_SIZE_MB = 50
+
 export function SubmissionForm() {
     const [isSubmitted, setIsSubmitted] = useState(false)
     const [isPending, startTransition] = useTransition()
+    const [mediaFile, setMediaFile] = useState<File | null>(null)
+    const [mediaPreview, setMediaPreview] = useState<string | null>(null)
+    const [uploadError, setUploadError] = useState<string | null>(null)
+    const [isUploading, setIsUploading] = useState(false)
+    const fileInputRef = useRef<HTMLInputElement>(null)
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
@@ -55,31 +59,95 @@ export function SubmissionForm() {
         },
     })
 
-    function onSubmit(values: z.infer<typeof formSchema>) {
-        // Convert to FormData to send to Server Action
-        const formData = new FormData()
-        if (values.name) formData.append("name", values.name)
-        formData.append("isAnonymous", String(values.isAnonymous))
-        formData.append("email", values.email ?? "")
-        values.storyType.forEach(type => {
-            formData.append("storyTypes", type)
-        })
-        formData.append("title", values.title)
-        formData.append("content", values.content)
-        formData.append("termsAccepted", String(values.termsAccepted))
+    function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+        const file = e.target.files?.[0]
+        if (!file) return
 
+        setUploadError(null)
+
+        const isImage = ACCEPTED_IMAGE_TYPES.includes(file.type)
+        const isVideo = ACCEPTED_VIDEO_TYPES.includes(file.type)
+
+        if (!isImage && !isVideo) {
+            setUploadError("Unsupported file type. Please upload JPG, PNG, WEBP, MP4, WEBM, or MOV.")
+            return
+        }
+
+        if (file.size > MAX_FILE_SIZE_MB * 1024 * 1024) {
+            setUploadError(`File is too large. Maximum size is ${MAX_FILE_SIZE_MB}MB.`)
+            return
+        }
+
+        setMediaFile(file)
+        setMediaPreview(URL.createObjectURL(file))
+    }
+
+    function removeMedia() {
+        setMediaFile(null)
+        setMediaPreview(null)
+        setUploadError(null)
+        if (fileInputRef.current) fileInputRef.current.value = ""
+    }
+
+    async function uploadMedia(file: File): Promise<{ imageUrl?: string; videoUrl?: string }> {
+        const isVideo = ACCEPTED_VIDEO_TYPES.includes(file.type)
+        const folder = isVideo ? "videos" : "images"
+        const ext = file.name.split(".").pop()
+        const path = `${folder}/${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`
+
+        const { error } = await supabase.storage
+            .from("story-media")
+            .upload(path, file, { upsert: false })
+
+        if (error) throw new Error(error.message)
+
+        const { data: urlData } = supabase.storage.from("story-media").getPublicUrl(path)
+
+        if (isVideo) return { videoUrl: urlData.publicUrl }
+        return { imageUrl: urlData.publicUrl }
+    }
+
+    function onSubmit(values: z.infer<typeof formSchema>) {
         startTransition(async () => {
+            let imageUrl: string | undefined
+            let videoUrl: string | undefined
+
+            if (mediaFile) {
+                setIsUploading(true)
+                try {
+                    const urls = await uploadMedia(mediaFile)
+                    imageUrl = urls.imageUrl
+                    videoUrl = urls.videoUrl
+                } catch (err) {
+                    setUploadError("Media upload failed. Please try again or submit without media.")
+                    setIsUploading(false)
+                    return
+                }
+                setIsUploading(false)
+            }
+
+            const formData = new FormData()
+            if (values.name) formData.append("name", values.name)
+            formData.append("isAnonymous", String(values.isAnonymous))
+            formData.append("email", values.email ?? "")
+            values.storyType.forEach(type => formData.append("storyTypes", type))
+            formData.append("title", values.title)
+            formData.append("content", values.content)
+            formData.append("termsAccepted", String(values.termsAccepted))
+            if (imageUrl) formData.append("imageUrl", imageUrl)
+            if (videoUrl) formData.append("videoUrl", videoUrl)
+
             const result = await submitStory({ message: "", success: false }, formData)
             if (result.success) {
                 setIsSubmitted(true)
             } else {
-                // Handle errors
-                console.error(result.message)
-                // Ideally show a toast here
                 alert("Something went wrong: " + result.message)
             }
         })
     }
+
+    const isImage = mediaFile && ACCEPTED_IMAGE_TYPES.includes(mediaFile.type)
+    const isVideo = mediaFile && ACCEPTED_VIDEO_TYPES.includes(mediaFile.type)
 
     if (isSubmitted) {
         return (
@@ -91,7 +159,7 @@ export function SubmissionForm() {
                 <p className="text-muted-foreground max-w-lg mx-auto">
                     Your story has been submitted and is now under review. {form.getValues("email") ? "We'll notify you by email once it's published." : "Check back soon to see it live!"}
                 </p>
-                <Button onClick={() => { setIsSubmitted(false); form.reset(); }} variant="outline" className="mt-4">
+                <Button onClick={() => { setIsSubmitted(false); form.reset(); removeMedia() }} variant="outline" className="mt-4">
                     Submit Another Story
                 </Button>
             </div>
@@ -272,15 +340,76 @@ export function SubmissionForm() {
                         )}
                     />
 
-                    {/* File Upload Mock */}
-                    <div className="border-2 border-dashed border-border rounded-lg p-8 text-center hover:bg-secondary/20 transition-colors cursor-pointer">
-                        <UploadCloud className="w-10 h-10 text-muted-foreground mx-auto mb-4" />
-                        <p className="text-sm font-medium">Click to upload media (Optional)</p>
-                        <p className="text-xs text-muted-foreground mt-1">JPG, PNG, MP4 (Max 10MB)</p>
+                    {/* File Upload */}
+                    <div className="space-y-2">
+                        <p className="text-sm font-medium">Media (Optional)</p>
+                        <p className="text-xs text-muted-foreground">Upload a photo or video to accompany your story. Max {MAX_FILE_SIZE_MB}MB.</p>
+
+                        {!mediaFile ? (
+                            <label
+                                htmlFor="media-upload"
+                                className="flex flex-col items-center justify-center border-2 border-dashed border-border rounded-lg p-8 text-center hover:bg-secondary/20 transition-colors cursor-pointer"
+                            >
+                                <UploadCloud className="w-10 h-10 text-muted-foreground mb-3" />
+                                <p className="text-sm font-medium">Click to upload media</p>
+                                <p className="text-xs text-muted-foreground mt-1">JPG, PNG, WEBP, MP4, WEBM, MOV</p>
+                                <input
+                                    id="media-upload"
+                                    ref={fileInputRef}
+                                    type="file"
+                                    accept={[...ACCEPTED_IMAGE_TYPES, ...ACCEPTED_VIDEO_TYPES].join(",")}
+                                    className="sr-only"
+                                    onChange={handleFileChange}
+                                />
+                            </label>
+                        ) : (
+                            <div className="border rounded-lg overflow-hidden">
+                                {isImage && mediaPreview && (
+                                    <div className="relative">
+                                        <img
+                                            src={mediaPreview}
+                                            alt="Preview"
+                                            className="w-full max-h-64 object-cover"
+                                        />
+                                    </div>
+                                )}
+                                {isVideo && mediaPreview && (
+                                    <video
+                                        src={mediaPreview}
+                                        controls
+                                        className="w-full max-h-64"
+                                    />
+                                )}
+                                <div className="flex items-center justify-between px-4 py-3 bg-slate-50 border-t">
+                                    <div className="flex items-center gap-2 text-sm text-slate-700 min-w-0">
+                                        {isImage ? <FileImage className="w-4 h-4 shrink-0 text-slate-500" /> : <Film className="w-4 h-4 shrink-0 text-slate-500" />}
+                                        <span className="truncate">{mediaFile.name}</span>
+                                        <span className="text-slate-400 shrink-0">({(mediaFile.size / 1024 / 1024).toFixed(1)}MB)</span>
+                                    </div>
+                                    <button
+                                        type="button"
+                                        onClick={removeMedia}
+                                        className="ml-3 p-1 rounded hover:bg-slate-200 transition-colors shrink-0"
+                                        aria-label="Remove file"
+                                    >
+                                        <X className="w-4 h-4 text-slate-500" />
+                                    </button>
+                                </div>
+                            </div>
+                        )}
+
+                        {uploadError && (
+                            <p className="text-sm text-red-600">{uploadError}</p>
+                        )}
                     </div>
 
-                    <Button type="submit" className="w-full rounded-full py-6 text-lg" disabled={isPending}>
-                        {isPending ? (
+                    <Button type="submit" className="w-full rounded-full py-6 text-lg" disabled={isPending || isUploading}>
+                        {isUploading ? (
+                            <>
+                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                Uploading media...
+                            </>
+                        ) : isPending ? (
                             <>
                                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                                 Submitting...

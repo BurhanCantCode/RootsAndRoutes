@@ -13,6 +13,8 @@ const submissionSchema = z.object({
     title: z.string().min(5),
     content: z.string().min(50),
     termsAccepted: z.literal(true),
+    imageUrl: z.string().url().optional().or(z.literal("")),
+    videoUrl: z.string().url().optional().or(z.literal("")),
 })
 
 export type FormState = {
@@ -32,6 +34,8 @@ export async function submitStory(prevState: FormState, formData: FormData): Pro
         title: (formData.get("title") as string) || "",
         content: (formData.get("content") as string) || "",
         termsAccepted: formData.get("termsAccepted") === "true",
+        imageUrl: (formData.get("imageUrl") as string) || "",
+        videoUrl: (formData.get("videoUrl") as string) || "",
     }
 
     const validated = submissionSchema.safeParse(rawData)
@@ -54,11 +58,11 @@ export async function submitStory(prevState: FormState, formData: FormData): Pro
                 content: validated.data.content,
                 types: validated.data.storyTypes,
                 authorEmail: (validated.data.email ?? null) as any,
-                authorName: validated.data.name || "Anonymous", // Use provided name or default
+                authorName: validated.data.name || "Anonymous",
                 isAnonymous: validated.data.isAnonymous,
-                // Assign a random placeholder image based on type for now, since we don't have real upload yet
-                imageUrl: getRandomImage(validated.data.storyTypes[0]),
-                status: "PENDING", // Default status
+                imageUrl: validated.data.imageUrl || null,
+                videoUrl: validated.data.videoUrl || null,
+                status: "PENDING",
             }
         })
 
@@ -163,16 +167,3 @@ export async function logoutAdmin() {
     redirect("/admin/login")
 }
 
-// Helper to get a nice placeholder image for demo purposes
-function getRandomImage(type: string): string {
-    // ... existing code ...
-    const images = [
-        "/images/generated/story-sarah.png",
-        "/images/generated/story-james.png",
-        "/images/generated/story-anon.png",
-        "/images/generated/story-elena.png",
-        "/images/generated/story-robert.png",
-        "/images/generated/story-fatima.png",
-    ]
-    return images[Math.floor(Math.random() * images.length)]
-}
