@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, DM_Serif_Display } from "next/font/google";
+import { Inter, DM_Serif_Display, Anton } from "next/font/google";
 import "./globals.css";
 import { TopBar } from "@/components/layout/TopBar";
 import { Header } from "@/components/layout/Header";
@@ -16,6 +16,12 @@ const dmSerif = DM_Serif_Display({
   subsets: ["latin"],
 });
 
+const anton = Anton({
+  weight: "400",
+  variable: "--font-anton",
+  subsets: ["latin"],
+});
+
 export const metadata: Metadata = {
   title: "Roots and Routes",
   description: "Amplifying voices, fostering change.",
@@ -29,7 +35,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${inter.variable} ${dmSerif.variable} antialiased flex flex-col min-h-screen bg-background text-foreground font-sans`}
+        className={`${inter.variable} ${dmSerif.variable} ${anton.variable} antialiased flex flex-col min-h-screen bg-background text-foreground font-sans`}
       >
         <TopBar />
         <Header />
