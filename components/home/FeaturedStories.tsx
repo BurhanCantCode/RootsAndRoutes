@@ -1,36 +1,25 @@
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { StoryCard, Story } from "@/components/stories/StoryCard"
+import { StoryCard } from "@/components/stories/StoryCard"
 import { MessageCircle } from "lucide-react"
+import db from "@/lib/db"
 
-const FEATURED_STORIES: Story[] = [
-    {
-        id: "1",
-        type: "written",
-        title: "The Day Everything Changed at Work",
-        excerpt: "I never thought my natural hair would be a topic of discussion in a corporate boardroom, until it was.",
-        authorName: "Sarah M.",
-        image: "/images/generated/story-sarah.png"
-    },
-    {
-        id: "2",
-        type: "video",
-        title: "After years of silence, I'm speaking up",
-        excerpt: "Growing up in a small town, sticking out wasn't safe. Now I'm reclaiming my narrative.",
-        authorName: "James K.",
-        image: "/images/generated/story-james.png"
-    },
-    {
-        id: "3",
-        type: "photo",
-        title: "Growing up between two cultures",
-        excerpt: "Too foreign for home, too foreign for here. The eternal struggle of the third culture kid.",
-        authorName: "Anonymous",
-        image: "/images/generated/story-anon.png"
-    }
-]
+export async function FeaturedStories() {
+    const stories = await db.story.findMany({
+        where: { status: "APPROVED" },
+        orderBy: { createdAt: 'desc' },
+        take: 3
+    })
 
-export function FeaturedStories() {
+    const mappedStories = stories.map(s => ({
+        id: s.id,
+        type: s.types[0] as "written" | "photo" | "video",
+        title: s.title,
+        excerpt: s.excerpt || s.content.substring(0, 150) + "...",
+        authorName: s.isAnonymous ? "Anonymous" : (s.authorName || "Anonymous"),
+        image: s.imageUrl || "/images/anonymous_profile.png"
+    }))
+
     return (
         <section className="py-24 px-4 bg-background">
             <div className="max-w-7xl mx-auto">
@@ -43,11 +32,17 @@ export function FeaturedStories() {
                     </p>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
-                    {FEATURED_STORIES.map(story => (
-                        <StoryCard key={story.id} story={story} />
-                    ))}
-                </div>
+                {mappedStories.length > 0 ? (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+                        {mappedStories.map(story => (
+                            <StoryCard key={story.id} story={story} />
+                        ))}
+                    </div>
+                ) : (
+                    <div className="text-center text-muted-foreground mb-16 py-12">
+                        <p className="text-lg">No stories yet. Be the first to share yours!</p>
+                    </div>
+                )}
 
                 <div className="text-center">
                     <Button variant="outline" className="border-2 border-foreground rounded-full px-10 py-6 text-base hover:bg-foreground hover:text-white transition-all" asChild>

@@ -18,7 +18,7 @@ export default async function StoriesPage() {
         title: s.title,
         excerpt: s.excerpt || s.content.substring(0, 150) + "...",
         authorName: s.isAnonymous ? "Anonymous" : (s.authorName || "Anonymous"),
-        image: s.imageUrl || (s.isAnonymous ? "/images/anonymous_profile.png" : "/images/generated/story-context.png")
+        image: s.imageUrl || "/images/anonymous_profile.png"
     }))
 
     return (
