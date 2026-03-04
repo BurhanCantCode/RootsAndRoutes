@@ -34,7 +34,9 @@ export function ContactForm() {
     function onSubmit(values: z.infer<typeof formSchema>) {
         const subject = encodeURIComponent(`Contact from ${values.name}`)
         const body = encodeURIComponent(`From: ${values.name} (${values.email})\n\n${values.message}`)
-        window.location.href = `mailto:rootsandroutes34@gmail.com?subject=${subject}&body=${body}`
+        const link = document.createElement('a')
+        link.href = `mailto:rootsandroutes34@gmail.com?subject=${subject}&body=${body}`
+        link.click()
     }
 
     return (
