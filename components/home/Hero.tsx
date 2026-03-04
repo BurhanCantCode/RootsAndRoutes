@@ -3,7 +3,7 @@
 import { motion } from "framer-motion"
 import Link from "next/link"
 import Image from "next/image"
-import { ArrowUpRight, Facebook, Linkedin, Twitter } from "lucide-react"
+import { ArrowUpRight, Instagram } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { LeafIcon, FlowerDoodle } from "@/components/decorative"
 
@@ -20,11 +20,10 @@ export function Hero() {
                     className="flex gap-4 mb-8 text-muted-foreground"
                 >
                     <div className="h-2 w-2 rounded-full bg-muted-foreground/30" />
-                    <div className="flex gap-3">
-                        <Facebook className="h-4 w-4 hover:text-primary transition-colors cursor-pointer" />
-                        <Linkedin className="h-4 w-4 hover:text-primary transition-colors cursor-pointer" />
-                        <Twitter className="h-4 w-4 hover:text-primary transition-colors cursor-pointer" />
-                    </div>
+                    <a href="https://www.instagram.com/rootsandroutes.global?igsh=MWQ0ODd0NzRjb3dpdQ%3D%3D&utm_source=qr" target="_blank" rel="noopener noreferrer" className="flex gap-2 items-center hover:text-primary transition-colors">
+                        <Instagram className="h-4 w-4" />
+                        <span className="text-sm">@rootsandroutes.global</span>
+                    </a>
                     <div className="h-2 w-2 rounded-full bg-muted-foreground/30" />
                 </motion.div>
 

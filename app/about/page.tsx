@@ -3,7 +3,7 @@
 import Image from "next/image"
 import Link from "next/link"
 import { motion } from "framer-motion"
-import { Linkedin } from "lucide-react"
+import { Instagram } from "lucide-react"
 
 export default function AboutPage() {
     return (
@@ -92,11 +92,10 @@ export default function AboutPage() {
                         <p className="text-muted-foreground">The people working behind the scenes.</p>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-10 max-w-3xl mx-auto">
                         {[
-                            { name: "Jane Doe", role: "Founder", image: "/images/generated/team-jane.png" },
-                            { name: "John Smith", role: "Co-Founder", image: "/images/generated/team-john.png" },
-                            { name: "Alex Chen", role: "Director", image: "/images/generated/team-alex.png" }
+                            { name: "Gamze Nur Demir", role: "Co-Founder", image: "/images/generated/team-gamze.png" },
+                            { name: "Melissa Okeke", role: "Co-Founder", image: "/images/generated/team-melissa.png" }
                         ].map((member) => (
                             <div key={member.name} className="flex flex-col items-center bg-white p-8 rounded-2xl shadow-sm hover:shadow-md transition-shadow">
                                 <div className="relative w-32 h-32 rounded-full overflow-hidden mb-6 border-4 border-secondary">
@@ -107,9 +106,9 @@ export default function AboutPage() {
                                 <p className="text-center text-sm text-muted-foreground mb-6">
                                     Passionate about social justice and storytelling. Committed to making a difference.
                                 </p>
-                                <button className="text-muted-foreground hover:text-primary transition-colors">
-                                    <Linkedin className="w-5 h-5" />
-                                </button>
+                                <a href="https://www.instagram.com/rootsandroutes.global?igsh=MWQ0ODd0NzRjb3dpdQ%3D%3D&utm_source=qr" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
+                                    <Instagram className="w-5 h-5" />
+                                </a>
                             </div>
                         ))}
                     </div>

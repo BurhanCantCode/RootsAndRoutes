@@ -22,8 +22,12 @@ export default function DonatePage() {
                     <h2 className="font-serif text-3xl font-medium text-foreground mb-6">
                         Donation Portal Coming Soon
                     </h2>
-                    <p className="text-lg text-muted-foreground mb-8">
+                    <p className="text-lg text-muted-foreground mb-4">
                         We are currently setting up our secure donation processing system. Check back soon for ways to support Roots & Routes financially.
+                    </p>
+                    <p className="text-lg text-muted-foreground mb-8">
+                        For donations, please contact us at:{' '}
+                        <a href="mailto:rootsandroutes34@gmail.com" className="text-primary hover:underline font-medium">rootsandroutes34@gmail.com</a>
                     </p>
                     <div className="flex flex-col sm:flex-row gap-4 justify-center">
                         <Button asChild variant="outline" className="rounded-full px-8">

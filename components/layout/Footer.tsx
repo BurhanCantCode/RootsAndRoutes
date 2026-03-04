@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { Sprout, Linkedin, Instagram } from 'lucide-react';
+import { Sprout, Instagram } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 
@@ -67,15 +67,15 @@ export function Footer() {
                     <div>
                         <h3 className="font-serif text-lg font-semibold mb-4 text-foreground">Connect</h3>
                         <div className="flex gap-4 mb-6">
-                            <a href="#" className="h-10 w-10 rounded-full bg-white flex items-center justify-center text-primary hover:bg-primary hover:text-white transition-colors shadow-sm">
-                                <Linkedin className="h-5 w-5" />
+                            <a href="https://www.instagram.com/rootsandroutes.global?igsh=MWQ0ODd0NzRjb3dpdQ%3D%3D&utm_source=qr" target="_blank" rel="noopener noreferrer" className="h-10 w-10 rounded-full bg-white flex items-center justify-center text-primary hover:bg-primary hover:text-white transition-colors shadow-sm">
+                                <Instagram className="h-5 w-5" />
                             </a>
                             <a href="https://www.instagram.com/rootsandroutes.global?igsh=MWQ0ODd0NzRjb3dpdQ%3D%3D&utm_source=qr" target="_blank" rel="noopener noreferrer" className="h-10 w-10 rounded-full bg-white flex items-center justify-center text-primary hover:bg-primary hover:text-white transition-colors shadow-sm">
                                 <Instagram className="h-5 w-5" />
                             </a>
                         </div>
                         <p className="text-sm text-muted-foreground">
-                            <a href="mailto:contact@rootsandroutes.org" className="hover:underline">contact@rootsandroutes.org</a>
+                            <a href="mailto:rootsandroutes34@gmail.com" className="hover:underline">rootsandroutes34@gmail.com</a>
                         </p>
                     </div>
                 </div>

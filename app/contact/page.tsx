@@ -1,7 +1,7 @@
 "use client"
 
 import { ContactForm } from "@/components/forms/ContactForm"
-import { Linkedin, Instagram, Mail } from "lucide-react"
+import { Instagram, Mail } from "lucide-react"
 
 export default function ContactPage() {
     return (
@@ -27,7 +27,7 @@ export default function ContactPage() {
                                     <Mail className="w-6 h-6 mt-1 opacity-80" />
                                     <div>
                                         <h3 className="font-medium mb-1">Email</h3>
-                                        <a href="mailto:contact@rootsandroutes.org" className="hover:underline opacity-90">contact@rootsandroutes.org</a>
+                                        <a href="mailto:rootsandroutes34@gmail.com" className="hover:underline opacity-90">rootsandroutes34@gmail.com</a>
                                     </div>
                                 </div>
                             </div>
@@ -36,8 +36,8 @@ export default function ContactPage() {
                         <div className="mt-12">
                             <h3 className="font-medium mb-4">Follow Us</h3>
                             <div className="flex gap-4">
-                                <a href="#" className="w-10 h-10 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center transition-colors">
-                                    <Linkedin className="w-5 h-5" />
+                                <a href="https://www.instagram.com/rootsandroutes.global?igsh=MWQ0ODd0NzRjb3dpdQ%3D%3D&utm_source=qr" target="_blank" rel="noopener noreferrer" className="w-10 h-10 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center transition-colors">
+                                    <Instagram className="w-5 h-5" />
                                 </a>
                                 <a href="https://www.instagram.com/rootsandroutes.global?igsh=MWQ0ODd0NzRjb3dpdQ%3D%3D&utm_source=qr" target="_blank" rel="noopener noreferrer" className="flex items-center gap-4 text-muted-foreground hover:text-primary transition-colors">
                                     <Instagram className="w-5 h-5" />
