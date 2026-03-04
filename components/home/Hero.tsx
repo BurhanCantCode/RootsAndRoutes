@@ -2,10 +2,9 @@
 
 import { motion } from "framer-motion"
 import Link from "next/link"
-import Image from "next/image"
 import { ArrowUpRight, Instagram } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { LeafIcon, FlowerDoodle } from "@/components/decorative"
+import { LeafIcon } from "@/components/decorative"
 
 export function Hero() {
     return (
@@ -64,50 +63,6 @@ export function Hero() {
                     </Button>
                 </motion.div>
 
-                {/* Images Grid */}
-                <motion.div
-                    initial={{ opacity: 0, y: 40 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.7, delay: 0.5 }}
-                    className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-12 items-center w-full max-w-6xl mx-auto"
-                >
-                    {/* Left Image - Tilted Left */}
-                    <div className="relative group md:translate-y-12">
-                        <FlowerDoodle className="absolute -top-10 -left-10 text-coral w-20 h-20 z-10 hidden md:block animate-pulse" />
-                        <div className="relative aspect-[3/4] w-full transform md:-rotate-3 transition-transform duration-500 hover:rotate-0 hover:scale-105 rounded-2xl overflow-hidden shadow-xl">
-                            <Image
-                                src="/images/generated/hero-portrait.png"
-                                alt="Portrait"
-                                fill
-                                className="object-cover"
-                            />
-                        </div>
-                    </div>
-
-                    {/* Center Image - Straight */}
-                    <div className="relative z-20">
-                        <div className="relative aspect-[4/5] w-full transform transition-transform duration-500 hover:scale-105 rounded-2xl overflow-hidden shadow-2xl border-4 border-white">
-                            <Image
-                                src="/images/generated/hero-community.png"
-                                alt="Community grouping"
-                                fill
-                                className="object-cover"
-                            />
-                        </div>
-                    </div>
-
-                    {/* Right Image - Tilted Right */}
-                    <div className="relative md:translate-y-12">
-                        <div className="relative aspect-[3/4] w-full transform md:rotate-3 transition-transform duration-500 hover:rotate-0 hover:scale-105 rounded-2xl overflow-hidden shadow-xl">
-                            <Image
-                                src="/images/generated/hero-friends.png"
-                                alt="Friends laughing"
-                                fill
-                                className="object-cover"
-                            />
-                        </div>
-                    </div>
-                </motion.div>
             </div>
         </section>
     )
