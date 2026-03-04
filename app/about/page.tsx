@@ -3,7 +3,7 @@
 import Image from "next/image"
 import Link from "next/link"
 import { motion } from "framer-motion"
-import { Instagram } from "lucide-react"
+import { Instagram, Linkedin } from "lucide-react"
 
 export default function AboutPage() {
     return (
@@ -94,8 +94,8 @@ export default function AboutPage() {
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-10 max-w-3xl mx-auto">
                         {[
-                            { name: "Gamze Nur Demir", role: "Co-Founder", image: "/images/generated/team-gamze.png" },
-                            { name: "Melissa Okeke", role: "Co-Founder", image: "/images/generated/team-melissa.png" }
+                            { name: "Gamze Nur Demir", role: "Co-Founder", image: "/images/team-gamze.jpg", linkedin: "https://linkedin.com/in/gamze-nur-demir" },
+                            { name: "Melissa Okeke", role: "Co-Founder", image: "/images/team-melissa.jpg", linkedin: "https://www.linkedin.com/in/melissaokeke" }
                         ].map((member) => (
                             <div key={member.name} className="flex flex-col items-center bg-white p-8 rounded-2xl shadow-sm hover:shadow-md transition-shadow">
                                 <div className="relative w-32 h-32 rounded-full overflow-hidden mb-6 border-4 border-secondary">
@@ -106,9 +106,14 @@ export default function AboutPage() {
                                 <p className="text-center text-sm text-muted-foreground mb-6">
                                     Passionate about social justice and storytelling. Committed to making a difference.
                                 </p>
-                                <a href="https://www.instagram.com/rootsandroutes.global?igsh=MWQ0ODd0NzRjb3dpdQ%3D%3D&utm_source=qr" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
-                                    <Instagram className="w-5 h-5" />
-                                </a>
+                                <div className="flex gap-4">
+                                    <a href="https://www.instagram.com/rootsandroutes.global?igsh=MWQ0ODd0NzRjb3dpdQ%3D%3D&utm_source=qr" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
+                                        <Instagram className="w-5 h-5" />
+                                    </a>
+                                    <a href={member.linkedin} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
+                                        <Linkedin className="w-5 h-5" />
+                                    </a>
+                                </div>
                             </div>
                         ))}
                     </div>
