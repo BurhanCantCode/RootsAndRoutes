@@ -17,7 +17,7 @@ export async function FeaturedStories() {
         title: s.title,
         excerpt: s.excerpt || s.content.substring(0, 150) + "...",
         authorName: s.isAnonymous ? "Anonymous" : (s.authorName || "Anonymous"),
-        image: s.imageUrl || "/images/anonymous_profile.png"
+        image: s.imageUrl || (s.isAnonymous ? "/images/anon.jpeg" : "/images/anonymous_profile.png")
     }))
 
     return (
